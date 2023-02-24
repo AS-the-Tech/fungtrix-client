@@ -13,6 +13,11 @@ import ProtectedRoute from "./routes/UserRoute";
 import Home from "./pages/Home";
 import AddNFT from "./pages/AddNFT";
 import { ToastContainer } from "react-toastify";
+import Footer from "./components/Footer";
+import UserWallet from "./pages/UserWallet";
+import Exchange from "./pages/Exchange";
+import Market from "./pages/Market";
+import MyNFTs from "./pages/MyNFTs";
 
 function App() {
   const dispatch = useDispatch();
@@ -45,7 +50,7 @@ function App() {
   return (
     <div id="dark" className="App">
       <Navbar />
-      <ToastContainer/>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -53,7 +58,12 @@ function App() {
         <Route path="/forgot" element={<Forgot />} />
         <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
         <Route path="/add-nft" element={<ProtectedRoute><AddNFT /></ProtectedRoute>} />
+        <Route path="/user/wallet" element={<ProtectedRoute><UserWallet /></ProtectedRoute>} />
+        <Route path="/exchange" element={<Exchange />} />
+        <Route path="/markets" element={<Market />} />
+        <Route path="/my-nfts" element={<ProtectedRoute><MyNFTs /></ProtectedRoute>} />
       </Routes>
+      <Footer />
     </div>
   );
 }
