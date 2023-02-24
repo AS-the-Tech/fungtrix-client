@@ -11,6 +11,8 @@ import { loginSuccess } from "./reducers";
 import Cookies from "js-cookie";
 import ProtectedRoute from "./routes/UserRoute";
 import Home from "./pages/Home";
+import AddNFT from "./pages/AddNFT";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,12 +45,14 @@ function App() {
   return (
     <div id="dark" className="App">
       <Navbar />
+      <ToastContainer/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot" element={<Forgot />} />
         <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+        <Route path="/add-nft" element={<ProtectedRoute><AddNFT /></ProtectedRoute>} />
       </Routes>
     </div>
   );

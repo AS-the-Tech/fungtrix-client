@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Navbar() {
     return (
@@ -32,6 +33,14 @@ export default function Navbar() {
                                 aria-expanded="false">
                                 Dashboard
                             </a>
+                        </li>
+                        <li className="nav-item dropdown">
+                            <Link
+                            to="/add-nft"
+                             className="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                Add NFT``
+                            </Link>
                         </li>
                     </ul>
                     <ul className="navbar-nav ml-auto">
