@@ -1,9 +1,16 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable array-callback-return */
 import React from "react";
-import { Line } from "react-chartjs-2";
 import Chart from "react-apexcharts";
-
+import { onValue, ref } from "firebase/database";
+import { db } from "../config/Firebase";
 // eslint-disable-next-line no-unused-vars
 import { Chart as ChartJS } from "chart.js/auto";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 var data = {
   options: {
     plotOptions: {
@@ -17,7 +24,7 @@ var data = {
     chart: {
       type: "candlestick",
       height: 350,
-      color: '#ff0000',
+      color: "#ff0000",
     },
 
     title: {
@@ -285,230 +292,325 @@ var data = {
   },
 };
 export default function Exchange() {
-  return (
-    <div className="container-fluid mtb15 no-fluid">
-      <div style={{ gap: "10px" }} className="row sm-gutters">
-        <div className="col-md-8">
-          <div className="market-trade-history" style={{ width: "100%" }}>
-            <h2 className="heading">Trade History</h2>
+  const { id } = useParams();
+  const { user } = useSelector((state) => ({ ...state }));
+  const [price, setprice] = React.useState({
+    sellprice: [],
+    sellshares: [],
+    buyshares: [],
+    buyprice: [],
+  });
+  console.log(price);
+  const [textData, setTextData] = React.useState();
+  const [current, setcurrprice] = React.useState("");
+  React.useEffect(() => {
+    const query = ref(db, id);
+    return onValue(query, (snapshot) => {
+      const data = snapshot.val();
 
-            {/* <Line
-              data={{
-                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                datasets: [
-                  {
-                    label: "# of Votes",
-                    data: [12, 19, 3, 5, 2, 3],
-                    fill: false,
-                    backgroundColor: "rgb(255, 99, 132)",
-                    borderColor: "rgba(255, 99, 132, 0.2)",
-                  },
-                ],
-              }}
-              options={{
-                maintainAspectRatio: false,
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                  },
-                },
-              }}
-            /> */}
-            <Chart
-              options={data.options}
-              series={data.series}
-              type="candlestick"
-              width="100%"
-            />
-          </div>
-          <div className="market-trade">
-            <ul className="nav nav-pills" role="tablist">
-              <li className="nav-item">
-                <a
-                  className="nav-link active"
-                  data-toggle="pill"
-                  href="#pills-trade-limit"
-                  role="tab"
-                  aria-selected="true"
-                >
-                  Limit
-                </a>
-              </li>
-            </ul>
-            <div className="tab-content">
+      if (snapshot.exists()) {
+        setcurrprice(data.currentPrice);
+        var value = [];
+        var sellvalue = [];
+        var innerdata = [];
+        var innerselldata = [];
+        Object.keys(data.sellOrders).forEach(function (key, index) {
+          sellvalue.push(key);
+          innerselldata.push(data.sellOrders[key]);
+        });
+        // setprice({ ...price, sellshares: sellvalue });
+        Object.keys(data.buyOrders).forEach(function (key, index) {
+          value.push(key);
+          innerdata.push(data.buyOrders[key]);
+        });
+
+        var total = 0;
+        var t = [];
+        var selltotal = 0;
+        var s = [];
+        innerdata.map((item) => {
+          total = 0;
+          Object.values(item).forEach(function (key, index) {
+            total += key.quantity;
+          });
+          t.push(total);
+        });
+        // setprice({ ...price, buyprice: total });
+        innerselldata.map((item) => {
+          selltotal = 0;
+          Object.values(item).forEach(function (key, index) {
+            selltotal += key.quantity;
+          });
+          s.push(selltotal);
+        });
+        // setprice({ ...price, sellprice: selltotal });
+        setprice({
+          ...price,
+          buyshares: value,
+          buyprice: t,
+          sellprice: s,
+          sellshares: sellvalue,
+        });
+        // setprice(data);
+      }
+    });
+  }, []);
+
+  const handleChange = (event) => {
+    setTextData({ ...textData, [event.target.name]: event.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // console.log(user)
+      console.log(textData.price)
+      let result = await axios.post('https://smact.vercel.app/api/placeSellOrder', {
+        "price": parseInt(textData.price),
+        "quantity": parseInt(textData.quantity),
+        "ticker_symbol": id,
+        "order_type": "market",
+        "buyerId": user.user.walletAddress
+      })
+        .then(async () => {
+          let re = await axios.post('http://localhost:8000/api/trade/add-trade', {
+            "price": parseInt(textData.price),
+            "quantity": parseInt(textData.quantity),
+            "ticker_symbol": id,
+            "order_type": "Sell",
+            "email": user.user.email,
+            "buyerId": user.user.walletAddress
+          })
+            .then(() => {
+              toast.success("Successfully Sell Share");
+            })
+        })
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleBuySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let result = await axios.post('https://smact.vercel.app/api/placeBuyOrder', {
+        "price": parseInt(textData.price),
+        "quantity": parseInt(textData.quantity),
+        "ticker_symbol": id,
+        "order_type": "market",
+        "buyerId": user.user.walletAddress
+      }).then(async () => {
+        let re = await axios.post('http://localhost:8000/api/trade/add-trade', {
+          "price": parseInt(textData.price),
+          "quantity": parseInt(textData.quantity),
+          "ticker_symbol": id,
+          "order_type": "Buy",
+          "email": user.user.email,
+          "buyerId": user.user.walletAddress
+        })
+          .then(() => {
+            toast.success("Successfully Buy Share");
+          });
+      })
+    }
+    catch (error) {
+      console.log(error);
+    }
+  };
+  return (
+    <>
+      {console.log(price)}
+      <div className="container-fluid mtb15 no-fluid">
+        <div style={{ gap: "10px" }} className="row sm-gutters">
+          <div className="col-md-8">
+            <div className="market-trade-history" style={{ width: "100%" }}>
               <div
-                className="tab-pane fade show active"
-                id="pills-trade-limit"
-                role="tabpanel"
+                className="row"
+                style={{ justifyContent: "space-between", marginLeft: "5px" }}
               >
-                <div className="d-flex justify-content-between">
-                  <div className="market-trade-buy">
-                    <div className="input-group">
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Price"
-                      />
-                      <div className="input-group-append">
-                        <span className="input-group-text">AC</span>
+                <h2
+                  style={{
+                    fontSize: "25px",
+                    letterSpacing: "1px",
+                    fontWeight: "600",
+                  }}
+                  className="heading"
+                >
+                  {id}
+                </h2>
+                <h2
+                  style={{
+                    fontSize: "25px",
+                    letterSpacing: "1px",
+                    fontWeight: "600",
+                  }}
+                  className="heading"
+                >
+                  Current Price: {current}
+                </h2>
+              </div>
+
+              <Chart
+                options={data.options}
+                series={data.series}
+                type="candlestick"
+                width="100%"
+              />
+            </div>
+            <div className="market-trade">
+              <ul className="nav nav-pills" role="tablist">
+                <li className="nav-item">
+                  <a
+                    className="nav-link active"
+                    data-toggle="pill"
+                    href="#pills-trade-limit"
+                    role="tab"
+                    aria-selected="true"
+                  >
+                    Limit
+                  </a>
+                </li>
+              </ul>
+              <div className="tab-content">
+                <div
+                  className="tab-pane fade show active"
+                  id="pills-trade-limit"
+                  role="tabpanel"
+                >
+                  <div className="d-flex justify-content-between">
+                    <div className="market-trade-buy">
+                      <div className="input-group">
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="Price"
+                          name="price"
+                          onChange={(event) => handleChange(event)}
+                        />
+                        <div className="input-group-append">
+                          <span className="input-group-text">AC</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="input-group">
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Amount"
-                      />
-                      <div className="input-group-append">
-                        <span className="input-group-text">SHARES</span>
+                      <div className="input-group">
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="Amount"
+                          name="quantity"
+                          onChange={(event) => handleChange(event)}
+                        />
+                        <div className="input-group-append">
+                          <span className="input-group-text">SHARES</span>
+                        </div>
                       </div>
+                      <button onClick={handleBuySubmit} className="btn buy">
+                        Buy
+                      </button>
                     </div>
-                    <button className="btn buy">Buy</button>
-                  </div>
-                  <div className="market-trade-sell">
-                    <div className="input-group">
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Price"
-                      />
-                      <div className="input-group-append">
-                        <span className="input-group-text">AC</span>
+                    <div className="market-trade-sell">
+                      <div className="input-group">
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="Price"
+                          name="price"
+                          onChange={(event) => handleChange(event)}
+                        />
+                        <div className="input-group-append">
+                          <span className="input-group-text">AC</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="input-group">
-                      <input
-                        type="number"
-                        className="form-control"
-                        placeholder="Amount"
-                      />
-                      <div className="input-group-append">
-                        <span className="input-group-text">SHARES</span>
+                      <div className="input-group">
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="Amount"
+                          name="quantity"
+                          onChange={(event) => handleChange(event)}
+                        />
+                        <div className="input-group-append">
+                          <span className="input-group-text">SHARES</span>
+                        </div>
                       </div>
+                      <button
+                        onClick={(e) => handleSubmit(e)}
+                        className="btn sell"
+                      >
+                        Sell
+                      </button>
                     </div>
-                    <button className="btn sell">Sell</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="col-md-3">
-          <div className="order-book mb15">
-            <h2 className="heading">Order Book</h2>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Price(AC)</th>
-                  <th>Shares</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="red-bg-80">
-                  <td className="red">0.022572</td>
-                  <td>1.253415</td>
-                  <td>15.27648</td>
-                </tr>
-                <tr className="red-bg-60">
-                  <td className="red">0.020371</td>
-                  <td>1.205415</td>
-                  <td>15.25648</td>
-                </tr>
-                <tr className="red-bg-40">
-                  <td className="red">0.023572</td>
-                  <td>1.645415</td>
-                  <td>15.23648</td>
-                </tr>
-                <tr className="red-bg-20">
-                  <td className="red">0.032378</td>
-                  <td>1.206715</td>
-                  <td>15.25348</td>
-                </tr>
-                <tr className="red-bg-10">
-                  <td className="red">0.022573</td>
-                  <td>1.262415</td>
-                  <td>15.19648</td>
-                </tr>
-                <tr className="red-bg-8">
-                  <td className="red">0.154377</td>
-                  <td>1.225415</td>
-                  <td>15.35648</td>
-                </tr>
-                <tr className="red-bg-5">
-                  <td className="red">0.120373</td>
-                  <td>1.285415</td>
-                  <td>15.25648</td>
-                </tr>
-                <tr className="red-bg">
-                  <td className="red">0.028576</td>
-                  <td>1.291415</td>
-                  <td>15.26448</td>
-                </tr>
-              </tbody>
-              <tbody className="ob-heading">
+          <div className="col-md-3">
+            <div className="order-book mb15">
+              <h2 className="heading">Order Book</h2>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Price(AC)</th>
+                    <th>Shares</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {price.buyprice.map((value, index) => (
+                    <tr className="red-bg" key={index}>
+                      <td>{price.sellshares[index]}</td>
+                      <td>{price.sellprice[index]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+
                 <tr>
                   <td>
-                    <span>Last Price</span>
-                    0.020367
+                    <span style={{ color: "white" }}>Current Price</span>
                   </td>
                   <td>
-                    <span>USD</span>
-                    148.65
+                    <span style={{ color: "white", fontSize: "15px" }}>
+                      {current}
+                    </span>
                   </td>
-                  <td className="red">
+                  {/* <td className="red">
                     <span>Change</span>
-                    -0.51%
-                  </td>
+                  </td> */}
                 </tr>
-              </tbody>
-              <tbody>
-                <tr className="green-bg">
-                  <td className="green">0.158373</td>
-                  <td>1.209515</td>
-                  <td>15.23248</td>
-                </tr>
-                <tr className="green-bg-5">
-                  <td className="green">0.020851</td>
-                  <td>1.206245</td>
-                  <td>15.25458</td>
-                </tr>
-                <tr className="green-bg-8">
-                  <td className="green">0.025375</td>
-                  <td>1.205715</td>
-                  <td>15.65648</td>
-                </tr>
-                <tr className="green-bg-10">
-                  <td className="green">0.020252</td>
-                  <td>1.205495</td>
-                  <td>15.24548</td>
-                </tr>
-                <tr className="green-bg-20">
-                  <td className="green">0.020373</td>
-                  <td>1.205415</td>
-                  <td>15.25648</td>
-                </tr>
-                <tr className="green-bg-40">
-                  <td className="green">0.020156</td>
-                  <td>1.207515</td>
-                  <td>15.28948</td>
-                </tr>
-                <tr className="green-bg-60">
-                  <td className="green">0.540375</td>
-                  <td>1.205915</td>
-                  <td>15.25748</td>
-                </tr>
-                <tr className="green-bg-80">
-                  <td className="green">0.020372</td>
-                  <td>1.205415</td>
-                  <td>15.25648</td>
-                </tr>
-              </tbody>
-            </table>
+
+                <tbody className="ob-heading">
+                  <tr>
+                    <td>
+                      <span>Last Price</span>
+                    </td>
+                    <td>
+                      <span>USD</span>
+                    </td>
+                    <td className="red">
+                      <span>Change</span>
+                    </td>
+                  </tr>
+                </tbody>
+                <thead>
+                  <tr>
+                    <th>Price(AC)</th>
+                    <th>Shares</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {price.sellprice.map((value, index) => (
+                    <tr className="green-bg" key={index}>
+                      <td>{price.buyshares[index]}</td>
+                      <td>{price.buyprice[index]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

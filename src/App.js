@@ -89,7 +89,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/exchange" element={<Exchange />} />
+        <Route path="/exchange/:id" element={<Exchange />} />
         <Route path="/markets" element={<Market />} />
         <Route
           path="/my-nfts"

@@ -1,63 +1,70 @@
-# Unlock the power of shared ownership with fractional NFT trading.
+# Getting Started with Create React App
 
-### Team name: Dark Coders
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Team members
+## Available Scripts
 
-- Abhay Ubhale - abhayubhale.30@gmail.com
-- Neel Dandiwala - neeldandi@gmail.com
-- Om Jadhav - omjadhav963@gmail.com
-- Hasnain Sayyed - hasnainsayyed833@gmail.com
+In the project directory, you can run:
 
-## Description
+### `npm start`
 
-- Introducing Fractional NFT Trading - a revolutionary new concept in the world of NFTs.
-- With famous NFT’s selling for millions of dollars, buying or selling an entire piece can be out of reach for most investors.
-- Our platform allows you to divide an NFT into smaller, fractional parts, making it more accessible and affordable for everyone to trade.
-- No longer will you have to miss out on owning a piece of digital art or collectible because of the high cost. Invest in the NFT market with confidence and flexibility with Fractional NFT Trading!
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-## Links
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-- GitHub Repo link: [Link to repository](https://github.com/AS-the-Tech/fungtrix-client)
+### `npm test`
 
-## Technology stack
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-Tools and technologies that you learnt and used in the project.
+### `npm run build`
 
-1. React JS
-2. Node JS
-3. Express JS
-4. Solidity
-5. Polygon
-6. Cloudinary
-7. MongoDB
-8. Web3.js
-9. Metamask
-10. Ganache
-11. Firebase RealTime DataBase
-12. Stripe
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-## Usage
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-- If one wants to invest in an application or a particular project of a company, the common way is to buy the shares of that company.
-- It might happen that your prediction on the project was right which should have gain you profits. Although company itself might be suffering loss; in turn the investors also suffer loss.
-- To overcome this, the proposed system can produce NFT’s which can sustain such cases. It might also be the case that the company is dissolve but it won’t affect the NFT and its shares. It will continue to exist until the investors of that NFT wants to trade it.
-- The project would create opportunities for small businesses and startups to get themselves listed without having to worry about their company formation structure
-- The company owners can benefit by keeping an amount of shares with themselves and gain royalty
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-## Future scope
+### `npm run eject`
 
-- List ACoin currency in other coin exchange platform.
-- Developing a full-fledged NFT trading platform.
-- Lending the NFT shares to earn interest.
-- Future and option trading of NFT shares.
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-## Screenshots
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-| ![](Images/Home.png) | ![](Images/NFT-page.png) | ![](Images/chart.png) | ![](Images/profile.png) |
-| :------------------: | :----------------------: | :-------------------: | :---------------------: |
-|      Home Page       |         NFT Page         |     Shares Chart      |      Profile Page       |
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-| ![](Images/buy-meta.png) | ![](Images/stripe.png) | ![](Images/burn-meta.png) | ![](Images/AddNft.png) |
-| :----------------------: | :--------------------: | :-----------------------: | :--------------------: |
-|        Get ACoin         |     Stripe Payment     |        Burn ACoin         |      Add NFT Page      |
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

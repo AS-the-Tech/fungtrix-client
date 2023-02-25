@@ -1,8 +1,10 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from "react";
-import NFTCard from "../components/NFTCard";
 import { getApprovedNFTS } from "../api/api";
 import axios from "axios";
-
+import { Link } from "react-router-dom";
+import { onValue, ref } from "firebase/database";
+import { db } from "../config/Firebase";
 export default function Market() {
   const [nfts, setNfts] = React.useState([]);
   const [loading, setloading] = React.useState(false);
@@ -12,28 +14,38 @@ export default function Market() {
       let token = [];
       console.log(res.data.nft);
       setNfts(res.data.nft);
-      res.data.nft.map((item) => token.push(item.tokenId));
+      res.data.nft.forEach((element) => {
+        token.push(element.tokenId);
+      });
       await axios
         .post("http://localhost:8000/nft/divisibilities", {
           tokenIds: token,
         })
         .then((res) => {
+          console.log("Success");
           setOwnershipValue(res.data);
           setloading(true);
         });
     });
   }, []);
-  const [value, setvalue] = React.useState([]);
-
-  //   const getownership = async (wallet, id) => {
-  //     return await axios.post("http://localhost:8000/nft/owner/own", {
-  //       tokenId: id,
-  //       owner: wallet,
-  //     });
-  //   };
+  //   const [value, setvalue] = React.useState([]);
+  const [price, setprice] = React.useState([]);
+  React.useEffect(() => {
+    const query = ref(db, "allStocksCurrentPrice");
+    return onValue(query, (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+      if (snapshot.exists()) {
+        // Object.values(data).map((project) => {
+        //   setprice((projects) => [...projects, project]);
+        // });
+        setprice(data);
+      }
+    });
+  }, []);
   return (
     <>
-      {console.log(ownershipValue)}
+      {console.log(price)}
       {!loading ? (
         <div style={{ height: "100vh" }} className="markets-capital pt70 pb40">
           <center>
@@ -76,36 +88,29 @@ export default function Market() {
               <tbody>
                 {nfts &&
                   nfts.map((item, index) => {
-                    //   var percentage = [];
-                    //   getownership(item.user["walletAddress"], item.tokenId).then(
-                    //     (ownership) => {
-                    //       //   percentage = ownership.data;
-                    //       //   console.log(ownership.data);
-                    //       value.push(ownership.data +1 / item.shares * 100);
-                    //     }
-                    //   );
-
                     return (
                       <>
-                        {console.log(value[index])}
                         <tr>
                           <th scope="row">
-                            <img
-                              src={item.image}
-                              style={{
-                                width: "100px",
-                                height: "100px",
-                              }}
-                            />
+                            <Link to={`/exchange/${item.name}`}>
+                              <img
+                                src={item.image}
+                                style={{
+                                  width: "100px",
+                                  height: "100px",
+                                }}
+                              />
+                            </Link>
                           </th>
                           <td>{item.name}</td>
                           <td>
                             {item.user["name"]}
-                            &nbsp;{(ownershipValue[index] / item.shares) * 100}%
+                            &nbsp;
+                            {(ownershipValue[index] / item.shares) * 100}%
                           </td>
                           <td>{item.price}</td>
-                          <td>{item.shares}</td>
-                          <td>{item.organization}</td>
+                          <td>{(parseInt(item.shares) / 1000000).toFixed(2) + "\tlakhs"  }</td>
+                          <td>{price[item.name] ?? "00"}</td>
                         </tr>
                       </>
                     );
@@ -117,13 +122,4 @@ export default function Market() {
       )}
     </>
   );
-}
-{
-  /* <div className="row">
-                    {nfts && nfts.map((nf, index) =>
-                    (
-                        <NFTCard key={index} nft={nf} />
-                    )
-                    )}
-                </div> */
 }
