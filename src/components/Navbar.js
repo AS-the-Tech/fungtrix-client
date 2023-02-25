@@ -17,7 +17,7 @@ export default function Navbar() {
             <header className="dark-bb">
                 <nav className="navbar navbar-expand-lg">
                     <Link className="navbar-brand" to="/">
-                        FungTrix
+                    Fungify
                     </Link>
                     <button
                         className="navbar-toggler"
