@@ -19,6 +19,7 @@
 ## Links
 
 - GitHub Repo link: [Link to repository](https://github.com/AS-the-Tech/fungtrix-client)
+- Presentation File link: [Link to PPTX](https://docs.google.com/presentation/d/1rFqfiOH0IEJ3zvrYvgwXlvwDDLZdLG9w/edit#slide=id.p40)
 
 ## Technology stack
 
@@ -36,6 +37,8 @@ Tools and technologies that you learnt and used in the project.
 10. Ganache
 11. Firebase RealTime DataBase
 12. Stripe
+13. Moralis
+14. Truffle
 
 ## Usage
 
