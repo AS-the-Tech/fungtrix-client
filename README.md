@@ -14,15 +14,37 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
+<<<<<<< HEAD
 ### `npm test`
+=======
+- GitHub Repo link: [Link to repository](https://github.com/AS-the-Tech/fungtrix-client)
+- Presentation File link: [Link to PPTX](https://docs.google.com/presentation/d/1rFqfiOH0IEJ3zvrYvgwXlvwDDLZdLG9w/edit#slide=id.p40)
+>>>>>>> 909b0f762f93d955f3d9af9c51ab2ce038b0c745
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
+<<<<<<< HEAD
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
+=======
+1. React JS
+2. Node JS
+3. Express JS
+4. Solidity
+5. Polygon
+6. Cloudinary
+7. MongoDB
+8. Web3.js
+9. Metamask
+10. Ganache
+11. Firebase RealTime DataBase
+12. Stripe
+13. Moralis
+14. Truffle
+>>>>>>> 909b0f762f93d955f3d9af9c51ab2ce038b0c745
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
